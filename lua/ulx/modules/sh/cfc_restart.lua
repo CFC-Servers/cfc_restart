@@ -78,7 +78,7 @@ function ulx.svrestart(calling_ply, time, stop)
 				ServerLog("\n\nYour Server Has Been Restarted!\n\n")
 
 				-- RunConsoleCommand("_restart") -- Pick a method and comment the other one out!
-				-- RunConsoleCommand("map",tostring(game.GetMap()))
+				RunConsoleCommand("changelevel",tostring(game.GetMap()))
 
 				OMG_SERVER_RESTART.yes = false
 				hook.Remove("Think","ServerRestartGo")
