@@ -94,7 +94,7 @@ function ulx.svrestart(calling_ply, time, stop)
 	ulx.fancyLogAdmin( calling_ply, "#A told the server to restart in #i seconds!", tonumber(time) )
 end
 local svrestart = ulx.command( CATEGORY_NAME, "ulx svrestart", ulx.svrestart, "!svrestart" )
-svrestart:addParam{ type=ULib.cmds.NumArg, min=0, default=30, hint="restart time", ULib.cmds.optional, ULib.cmds.round }
+svrestart:addParam{ type=ULib.cmds.NumArg, min=0, hint="restart time", ULib.cmds.optional, ULib.cmds.round }
 svrestart:addParam{ type=ULib.cmds.BoolArg, invisible=true }
 svrestart:defaultAccess( ULib.ACCESS_SUPERADMIN )
 svrestart:help( "Starts a server restart, and lets everyone know that the server is about to restart." )
