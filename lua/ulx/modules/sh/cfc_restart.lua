@@ -1,4 +1,6 @@
 -- Put me in addons/ulxsvrestart/lua/ulx/modules/sh/restartme.lua
+-- Theres so many poor design decisions in this script it should be rewritten when there are
+-- less pressing things to work on.
 
 AddCSLuaFile()
 if SERVER then util.AddNetworkString("OMG_SERVER_RESTART") end
@@ -26,21 +28,23 @@ if CLIENT then
 	end
 
 	net.Receive("OMG_SERVER_RESTART", function()
-		local time = Entity(0):GetNWFloat("OMG_SERVER_RESTART", -1)
-		SVRestartHud(time)
+		local thyme= Entity(0):GetNWFloat("OMG_SERVER_RESTART", -1)
+		SVRestartHud(thyme)
 		hook.Add("InitPostEntity", "ServerRestartGo", function()
 			timer.Simple(0, function()
-				time = Entity(0):GetNWFloat("OMG_SERVER_RESTART", -1)
-				SVRestartHud(time)
+				thyme= Entity(0):GetNWFloat("OMG_SERVER_RESTART", -1)
+				SVRestartHud(thyme)
 			end)
 		end)
 	end)
 end
 
-OMG_SERVER_RESTART = {yes = false, time = 0}
-function ulx.svrestart(calling_ply, time, stop)
+OMG_SERVER_RESTART = {yes = false, thyme= 30}
+
+function ulx.svrestart(calling_ply, thyme, stop)
 
 	OMG_SERVER_RESTART.yes = false
+	
 	if SERVER then
 		timer.Destroy("__SERVER_RESTART_OMG")
 		hook.Remove("Think","ServerRestartGo")
@@ -58,26 +62,27 @@ function ulx.svrestart(calling_ply, time, stop)
 		return 
 	end
 
-	local time = math.max(0,tonumber(time))
+	local thyme= math.max(0,tonumber(thyme))
 
-	OMG_SERVER_RESTART = {yes = true, time = (SysTime()+tonumber(time))}
+	OMG_SERVER_RESTART = {yes = true, thyme= (SysTime()+tonumber(thyme))}
 
-	local diff = math.max(0,SysTime() - SysTime()+time)
+	local diff = math.max(0,SysTime() - SysTime()+thyme)
 	Entity(0):SetNWFloat("OMG_SERVER_RESTART", diff)
 
 	if SERVER then
-		timer.Create("__SERVER_RESTART_OMG", 0.9, time+1, function()
-			local diff = math.max(0,SysTime() - SysTime()+time)
+		timer.Create("__SERVER_RESTART_OMG", 0.9, thyme+1, function()
+			local diff = math.max(0,SysTime() - SysTime()+thyme) -- Isn't this the same as max(0,thyme) ?
 			Entity(0):SetNWFloat("OMG_SERVER_RESTART", math.max(0,diff))
 		end)
 		hook.Add("Think","ServerRestartGo",function()
 			local bool = OMG_SERVER_RESTART.yes
-			local systime = OMG_SERVER_RESTART.time
+			local systhyme= OMG_SERVER_RESTART.thyme
 
-			if bool and systime <= SysTime() then
+			if bool and systhyme<= SysTime() then
 				ServerLog("\n\nYour Server Has Been Restarted!\n\n")
 
 				-- RunConsoleCommand("_restart") -- Pick a method and comment the other one out!
+				
 				RunConsoleCommand("changelevel",tostring(game.GetMap()))
 
 				OMG_SERVER_RESTART.yes = false
@@ -91,10 +96,11 @@ function ulx.svrestart(calling_ply, time, stop)
 		end)
 	end
 
-	ulx.fancyLogAdmin( calling_ply, "#A told the server to restart in #i seconds!", tonumber(time) )
+	ulx.fancyLogAdmin( calling_ply, "#A told the server to restart in #i seconds!", tonumber(thyme) )
 end
 local svrestart = ulx.command( CATEGORY_NAME, "ulx svrestart", ulx.svrestart, "!svrestart" )
-svrestart:addParam{ type=ULib.cmds.NumArg, min=0, hint="restart time", ULib.cmds.optional, ULib.cmds.round }
+svrestart:addParam{ type=ULib.cmds.NumArg, min=0, hint="restart time", ULib.cmds.optional, ULib.cmds.round,
+default=30}
 svrestart:addParam{ type=ULib.cmds.BoolArg, invisible=true }
 svrestart:defaultAccess( ULib.ACCESS_SUPERADMIN )
 svrestart:help( "Starts a server restart, and lets everyone know that the server is about to restart." )
