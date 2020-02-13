@@ -18,7 +18,6 @@ if CLIENT then
         timer.Create( "CFC_SERVER_RESTART_TIMER", 1, math.max( 1, whensta ), function()
             whendyn = math.max( 0,  whendyn - 1  )
         end )
-
         timer.Simple( whensta + 0.1, function()
             hook.Remove( "DrawOverlay", "ServerRestartGo" )  
             timer.Remove( "CFC_SERVER_RESTART_TIMER" )
@@ -26,18 +25,18 @@ if CLIENT then
     end
 
     net.Receive( "CFC_SERVER_RESTART", function()
-        local thyme= Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
+        local thyme = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
         SVRestartHud( thyme )
         hook.Add( "InitPostEntity", "ServerRestartGo", function()
             timer.Simple( 0, function()
-                thyme= Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
+                thyme = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
                 SVRestartHud( thyme )
             end )
         end )
     end )
 end
 
-CFC_SERVER_RESTART = { yes = false, thyme= 30 }
+CFC_SERVER_RESTART = { yes = false, thyme = 30 }
 function ulx.svrestart( calling_ply, thyme, stop )
 
     CFC_SERVER_RESTART.yes = false
@@ -59,15 +58,14 @@ function ulx.svrestart( calling_ply, thyme, stop )
         return
     end
 
-    local thyme= math.max( 0, tonumber( thyme ) )
+    local thyme = math.max( 0, tonumber( thyme ) )
 
     CFC_SERVER_RESTART = { yes = true, thyme = SysTime() + tonumber( thyme ) }
 
     local diff = math.max( 0, SysTime() - SysTime() + thyme )
     Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", diff )
-   
     if SERVER then
-        timer.Create( "CFC_SERVER_RESTART", 0.9, thyme+1, function()
+        timer.Create( "CFC_SERVER_RESTART", 0.9, thyme + 1, function()
             local diff = math.max( 0, SysTime() - SysTime() + thyme ) -- Isn't this the same as max( 0, thyme ) ?
             Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", math.max( 0, diff ) )
         end )
