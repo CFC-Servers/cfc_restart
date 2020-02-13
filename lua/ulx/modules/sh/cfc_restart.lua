@@ -12,18 +12,18 @@ if CLIENT then
         hook.Add( "DrawOverlay", "ServerRestartGo", function()
             surface.SetFont( "TargetID" )
             local txt = "The server is restarting in " .. ( whendyn > -1 and whendyn or "some" ) .. " seconds!\n"
-            local tw, th = surface.GetTextSize( txt )
-
-            draw.WordBox( 0, ScrW()-tw, 10, txt, "TargetID", {r = 0, g = 0, b = 0, a = 180}, {r = 255, g = 0, b = 0, a = 255} )
-        end )
+            local tw, th = surface.GetTextSize( txt ) -- Jenkins doesn't like th because it's unused but I have to leave it there because surface.GetTextSize() returns 2 things
+   
+            draw.WordBox( 0, ScrW()-tw, 10, txt, "TargetID", {r = 0, g = 0, b = 0, a = 180}, {r = 255, g = 0, b = 0, a = 255} ) -- Says there is an "Unnecessary Parenthesies" but I see none
+        end)
 
         timer.Create( "CFC_SERVER_RESTART_TIMER", 1, math.max( 1, whensta ), function()
-            whendyn = math.max( 0, ( whendyn - 1 ) )
+            whendyn = math.max( 0,  whendyn - 1  )
         end )
 
         timer.Simple( whensta+0.1, function()
             hook.Remove( "DrawOverlay", "ServerRestartGo" )
-            timer.Destroy( "CFC_SERVER_RESTART_TIMER" )
+            timer.Remove( "CFC_SERVER_RESTART_TIMER" )
         end )
     end
 
@@ -46,7 +46,7 @@ function ulx.svrestart( calling_ply, thyme, stop )
     CFC_SERVER_RESTART.yes = false
 
     if SERVER then
-        timer.Destroy( "CFC_SERVER_RESTART_TIMER" )
+        timer.Remove( "CFC_SERVER_RESTART_TIMER" )
         hook.Remove( "Think", "ServerRestartGo" )
     end
 
