@@ -36,8 +36,8 @@ if CLIENT then
     end )
 end
 
-CFC_SERVER_RESTART = { yes = false, time = 30 }
-function ulx.svrestart( calling_ply, time, stop )
+CFC_SERVER_RESTART = { ["yes"] = false, ["time"] = 30 }
+function ulx.svrestart( calling_ply, time_2, stop )
 
     CFC_SERVER_RESTART.yes = false
 
@@ -60,7 +60,7 @@ function ulx.svrestart( calling_ply, time, stop )
 
     local time = math.max( 0, tonumber( time ) )
 
-    CFC_SERVER_RESTART = { yes = true, time = SysTime() + tonumber( time ) }
+    CFC_SERVER_RESTART = { ["yes"] = true, ["time"] = SysTime() + tonumber( time ) }
 
     local diff = math.max( 0, SysTime() - SysTime() + time )
     Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", diff )
