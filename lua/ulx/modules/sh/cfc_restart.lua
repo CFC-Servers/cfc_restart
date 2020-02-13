@@ -25,19 +25,19 @@ if CLIENT then
     end
 
     net.Receive( "CFC_SERVER_RESTART", function()
-        local thyme = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
-        SVRestartHud( thyme )
+        local time = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
+        SVRestartHud( time )
         hook.Add( "InitPostEntity", "ServerRestartGo", function()
             timer.Simple( 0, function()
-                thyme = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
-                SVRestartHud( thyme )
+                time = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
+                SVRestartHud( time )
             end )
         end )
     end )
 end
 
-CFC_SERVER_RESTART = { yes = false, thyme = 30 }
-function ulx.svrestart( calling_ply, thyme, stop )
+CFC_SERVER_RESTART = { yes = false, time = 30 }
+function ulx.svrestart( calling_ply, time, stop )
 
     CFC_SERVER_RESTART.yes = false
 
@@ -58,22 +58,22 @@ function ulx.svrestart( calling_ply, thyme, stop )
         return
     end
 
-    local thyme = math.max( 0, tonumber( thyme ) )
+    local time = math.max( 0, tonumber( time ) )
 
-    CFC_SERVER_RESTART = { yes = true, thyme = SysTime() + tonumber( thyme ) }
+    CFC_SERVER_RESTART = { yes = true, time = SysTime() + tonumber( time ) }
 
-    local diff = math.max( 0, SysTime() - SysTime() + thyme )
+    local diff = math.max( 0, SysTime() - SysTime() + time )
     Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", diff )
     if SERVER then
-        timer.Create( "CFC_SERVER_RESTART", 0.9, thyme + 1, function()
-            local diff = math.max( 0, SysTime() - SysTime() + thyme ) -- Isn't this the same as max( 0, thyme ) ?
+        timer.Create( "CFC_SERVER_RESTART", 0.9, time + 1, function()
+            local diff = math.max( 0, SysTime() - SysTime() + time ) -- Isn't this the same as max( 0, time ) ?
             Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", math.max( 0, diff ) )
         end )
         hook.Add( "Think", "ServerRestartGo", function()
             local bool = CFC_SERVER_RESTART.yes
-            local systhyme = CFC_SERVER_RESTART.thyme
+            local systime = CFC_SERVER_RESTART.time
 
-            if bool and systhyme <= SysTime() then
+            if bool and systime <= SysTime() then
                 ServerLog( "\n\nYour Server Has Been Restarted!\n\n" )
 
                 -- RunConsoleCommand( "_restart" ) -- Pick a method and comment the other one out!
@@ -91,7 +91,7 @@ function ulx.svrestart( calling_ply, thyme, stop )
         end )
     end
 
-    ulx.fancyLogAdmin( calling_ply, "#A told the server to restart in #i seconds!", tonumber( thyme ) )
+    ulx.fancyLogAdmin( calling_ply, "#A told the server to restart in #i seconds!", tonumber( time ) )
 end
 local svrestart = ulx.command( CATEGORY_NAME, "ulx svrestart", ulx.svrestart, "!svrestart" )
 svrestart:addParam{ type = ULib.cmds.NumArg, min = 0, hint = "restart time", ULib.cmds.optional, ULib.cmds.round,
