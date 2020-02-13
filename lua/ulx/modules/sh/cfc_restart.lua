@@ -12,7 +12,7 @@ if CLIENT then
         hook.Add( "DrawOverlay", "ServerRestartGo", function()
             surface.SetFont( "TargetID" )
             local txt = "The server is restarting in " .. ( whendyn > -1 and whendyn or "some" ) .. " seconds!\n"
-            local tw, th = surface.GetTextSize( txt ) -- Jenkins doesn't like th because it's unused but I have to leave it there because surface.GetTextSize() returns 2 things
+            local tw, _ = surface.GetTextSize( txt )
    
             draw.WordBox( 0, ScrW()-tw, 10, txt, "TargetID", {r = 0, g = 0, b = 0, a = 180}, {r = 255, g = 0, b = 0, a = 255} ) -- Says there is an "Unnecessary Parenthesies" but I see none
         end)
