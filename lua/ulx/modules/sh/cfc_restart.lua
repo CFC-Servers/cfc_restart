@@ -64,7 +64,7 @@ function ulx.svrestart( calling_ply, thyme, stop )
 
 	local thyme= math.max( 0,tonumber( thyme ) )
 
-	CFC_SERVER_RESTART = {yes = true, thyme= ( SysTime()+tonumber(thyme) )}
+	CFC_SERVER_RESTART = {yes = true, thyme= ( SysTime()+tonumber( thyme ) )}
 
 	local diff = math.max( 0,SysTime() - SysTime()+thyme )
 	Entity(0):SetNWFloat( "CFC_SERVER_RESTART", diff )
