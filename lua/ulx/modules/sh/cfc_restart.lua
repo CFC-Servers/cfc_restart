@@ -19,7 +19,7 @@ if CLIENT then
             whendyn = math.max( 0,  whendyn - 1  )
         end )
         timer.Simple( whensta + 0.1, function()
-            hook.Remove( "DrawOverlay", "ServerRestartGo" )  
+            hook.Remove( "DrawOverlay", "ServerRestartGo" )
             timer.Remove( "CFC_SERVER_RESTART_TIMER" )
         end )
     end
