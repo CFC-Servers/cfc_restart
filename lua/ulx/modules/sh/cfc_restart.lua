@@ -3,7 +3,7 @@
 -- less pressing things to work on.
 
 AddCSLuaFile()
-if SERVER then util.AddNetworkString("OMG_SERVER_RESTART") end
+if SERVER then util.AddNetworkString("SERVER_RESTART") end
 
 if CLIENT then
 	local function SVRestartHud(whensta)
@@ -17,22 +17,22 @@ if CLIENT then
 			draw.WordBox(0, ScrW()-tw, 10, txt, "TargetID", {r=0,g=0,b=0,a=180}, {r=255,g=0,b=0,a=255})
 		end)
 
-		timer.Create("_SERVER_RESTART_OMG", 1, math.max(1,whensta), function()
+		timer.Create("SERVER_RESTART_TIMER", 1, math.max(1,whensta), function()
 			whendyn = math.max(0,(whendyn - 1))
 		end)
 
 		timer.Simple(whensta+0.1, function()
 			hook.Remove("DrawOverlay","ServerRestartGo")
-			timer.Destroy("_SERVER_RESTART_OMG")
+			timer.Destroy("SERVER_RESTART_TIMER")
 		end)
 	end
 
-	net.Receive("OMG_SERVER_RESTART", function()
-		local thyme= Entity(0):GetNWFloat("OMG_SERVER_RESTART", -1)
+	net.Receive("SERVER_RESTART", function()
+		local thyme= Entity(0):GetNWFloat("SERVER_RESTART", -1)
 		SVRestartHud(thyme)
 		hook.Add("InitPostEntity", "ServerRestartGo", function()
 			timer.Simple(0, function()
-				thyme= Entity(0):GetNWFloat("OMG_SERVER_RESTART", -1)
+				thyme= Entity(0):GetNWFloat("SERVER_RESTART", -1)
 				SVRestartHud(thyme)
 			end)
 		end)
@@ -46,15 +46,15 @@ function ulx.svrestart(calling_ply, thyme, stop)
 	OMG_SERVER_RESTART.yes = false
 	
 	if SERVER then
-		timer.Destroy("__SERVER_RESTART_OMG")
+		timer.Destroy("SERVER_RESTART_TIM ER")
 		hook.Remove("Think","ServerRestartGo")
 	end
 
 	if stop then
-		Entity(0):SetNWFloat("OMG_SERVER_RESTART", 0)
+		Entity(0):SetNWFloat("SERVER_RESTART", 0)
 
 		timer.Simple(0.21, function() -- Slow to update??
-			net.Start("OMG_SERVER_RESTART")
+			net.Start("SERVER_RESTART")
 			net.Broadcast()
 		end)
 		
@@ -67,16 +67,16 @@ function ulx.svrestart(calling_ply, thyme, stop)
 	OMG_SERVER_RESTART = {yes = true, thyme= (SysTime()+tonumber(thyme))}
 
 	local diff = math.max(0,SysTime() - SysTime()+thyme)
-	Entity(0):SetNWFloat("OMG_SERVER_RESTART", diff)
+	Entity(0):SetNWFloat("SERVER_RESTART", diff)
 
 	if SERVER then
-		timer.Create("__SERVER_RESTART_OMG", 0.9, thyme+1, function()
+		timer.Create("SERVER_RESTART", 0.9, thyme+1, function()
 			local diff = math.max(0,SysTime() - SysTime()+thyme) -- Isn't this the same as max(0,thyme) ?
-			Entity(0):SetNWFloat("OMG_SERVER_RESTART", math.max(0,diff))
+			Entity(0):SetNWFloat("SERVER_RESTART", math.max(0,diff))
 		end)
 		hook.Add("Think","ServerRestartGo",function()
-			local bool = OMG_SERVER_RESTART.yes
-			local systhyme= OMG_SERVER_RESTART.thyme
+			local bool = SERVER_RESTART.yes
+			local systhyme= SERVER_RESTART.thyme
 
 			if bool and systhyme<= SysTime() then
 				ServerLog("\n\nYour Server Has Been Restarted!\n\n")
@@ -85,13 +85,13 @@ function ulx.svrestart(calling_ply, thyme, stop)
 				
 				RunConsoleCommand("changelevel",tostring(game.GetMap()))
 
-				OMG_SERVER_RESTART.yes = false
+				SERVER_RESTART.yes = false
 				hook.Remove("Think","ServerRestartGo")
 			end
 			if not bool then hook.Remove("Think","ServerRestartGo") end
 		end)
 		timer.Simple(0.21, function()
-			net.Start("OMG_SERVER_RESTART")
+			net.Start("SERVER_RESTART")
 			net.Broadcast()
 		end)
 	end
