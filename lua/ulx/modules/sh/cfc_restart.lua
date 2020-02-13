@@ -13,9 +13,8 @@ if CLIENT then
             surface.SetFont( "TargetID" )
             local txt = "The server is restarting in " .. ( whendyn > -1 and whendyn or "some" ) .. " seconds!\n"
             local tw, _ = surface.GetTextSize( txt )
-            draw.WordBox( 0, ScrW()-tw, 10, txt, "TargetID", {r = 0, g = 0, b = 0, a = 180}, {r = 255, g = 0, b = 0, a = 255} ) -- Says there is an "Unnecessary Parenthesies" but I see none
-        end ) 
-
+            draw.WordBox( 0, ScrW() - tw, 10, txt, "TargetID", { r = 0, g = 0, b = 0, a = 180 }, { r = 255, g = 0, b = 0, a = 255} ) -- Says there is an "Unnecessary Parenthesies" but I see none
+        end )
         timer.Create( "CFC_SERVER_RESTART_TIMER", 1, math.max( 1, whensta ), function()
             whendyn = math.max( 0,  whendyn - 1  )
         end )
@@ -38,8 +37,7 @@ if CLIENT then
     end )
 end
 
-CFC_SERVER_RESTART = {yes = false, thyme= 30}
-
+CFC_SERVER_RESTART = { yes = false, thyme= 30 }
 function ulx.svrestart( calling_ply, thyme, stop )
 
     CFC_SERVER_RESTART.yes = false
@@ -63,21 +61,21 @@ function ulx.svrestart( calling_ply, thyme, stop )
 
     local thyme= math.max( 0, tonumber( thyme ) )
 
-    CFC_SERVER_RESTART = {yes = true, thyme= ( SysTime()+tonumber( thyme ) )}
+    CFC_SERVER_RESTART = { yes = true, thyme = SysTime() + tonumber( thyme ) }
 
-    local diff = math.max( 0, SysTime() - SysTime()+thyme )
+    local diff = math.max( 0, SysTime() - SysTime() + thyme )
     Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", diff )
-
+   
     if SERVER then
         timer.Create( "CFC_SERVER_RESTART", 0.9, thyme+1, function()
-            local diff = math.max( 0, SysTime() - SysTime()+thyme ) -- Isn't this the same as max( 0, thyme ) ?
+            local diff = math.max( 0, SysTime() - SysTime() + thyme ) -- Isn't this the same as max( 0, thyme ) ?
             Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", math.max( 0, diff ) )
         end )
         hook.Add( "Think", "ServerRestartGo", function()
             local bool = CFC_SERVER_RESTART.yes
-            local systhyme= CFC_SERVER_RESTART.thyme
+            local systhyme = CFC_SERVER_RESTART.thyme
 
-            if bool and systhyme<= SysTime() then
+            if bool and systhyme <= SysTime() then
                 ServerLog( "\n\nYour Server Has Been Restarted!\n\n" )
 
                 -- RunConsoleCommand( "_restart" ) -- Pick a method and comment the other one out!
