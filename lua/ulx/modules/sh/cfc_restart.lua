@@ -13,16 +13,15 @@ if CLIENT then
             surface.SetFont( "TargetID" )
             local txt = "The server is restarting in " .. ( whendyn > -1 and whendyn or "some" ) .. " seconds!\n"
             local tw, _ = surface.GetTextSize( txt )
-   
             draw.WordBox( 0, ScrW()-tw, 10, txt, "TargetID", {r = 0, g = 0, b = 0, a = 180}, {r = 255, g = 0, b = 0, a = 255} ) -- Says there is an "Unnecessary Parenthesies" but I see none
-        end)
+        end ) 
 
         timer.Create( "CFC_SERVER_RESTART_TIMER", 1, math.max( 1, whensta ), function()
             whendyn = math.max( 0,  whendyn - 1  )
         end )
 
-        timer.Simple( whensta+0.1, function()
-            hook.Remove( "DrawOverlay", "ServerRestartGo" )
+        timer.Simple( whensta + 0.1, function()
+            hook.Remove( "DrawOverlay", "ServerRestartGo" )  
             timer.Remove( "CFC_SERVER_RESTART_TIMER" )
         end )
     end
