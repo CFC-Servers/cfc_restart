@@ -66,7 +66,6 @@ function ulx.svrestart( calling_ply, time_2, stop )
     Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", diff )
     if SERVER then
         timer.Create( "CFC_SERVER_RESTART", 0.9, time + 1, function()
-            local diff = math.max( 0, SysTime() - SysTime() + time ) -- Isn't this the same as max( 0, time ) ?
             Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", math.max( 0, diff ) )
         end )
         hook.Add( "Think", "ServerRestartGo", function()
