@@ -58,8 +58,6 @@ function ulx.svrestart( calling_ply, time, stop )
         return
     end
 
-    --local time = math.max( 0, tonumber( time ) )
-
     CFC_SERVER_RESTART = { ["yes"] = true, ["time"] = SysTime() + tonumber( time ) }
 
     local diff = math.max( 0, SysTime() - SysTime() + time )
