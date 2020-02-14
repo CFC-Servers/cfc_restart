@@ -37,7 +37,7 @@ if CLIENT then
 end
 
 CFC_SERVER_RESTART = { ["yes"] = false, ["time"] = 30 }
-function ulx.svrestart( calling_ply, time_2, stop )
+function ulx.svrestart( calling_ply, time, stop )
 
     CFC_SERVER_RESTART.yes = false
 
@@ -58,7 +58,7 @@ function ulx.svrestart( calling_ply, time_2, stop )
         return
     end
 
-    local time = math.max( 0, tonumber( time ) )
+    --local time = math.max( 0, tonumber( time ) )
 
     CFC_SERVER_RESTART = { ["yes"] = true, ["time"] = SysTime() + tonumber( time ) }
 
