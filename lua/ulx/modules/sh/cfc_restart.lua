@@ -13,7 +13,7 @@ if CLIENT then
             surface.SetFont( "TargetID" )
             local txt = "The server is restarting in " .. ( whendyn > -1 and whendyn or "some" ) .. " seconds!\n"
             local tw, _ = surface.GetTextSize( txt )
-            draw.WordBox( 0, ScrW() - tw, 10, txt, "TargetID", { r = 0, g = 0, b = 0, a = 180 }, { r = 255, g = 0, b = 0, a = 255} ) -- Says there is an "Unnecessary Parenthesies" but I see none
+            draw.WordBox( 0, ScrW() - tw, 10, txt, "TargetID", { r = 0, g = 0, b = 0, a = 180 }, { r = 255, g = 0, b = 0, a = 255} ) 
         end )
         timer.Create( "CFC_SERVER_RESTART_TIMER", 1, math.max( 1, whensta ), function()
             whendyn = math.max( 0,  whendyn - 1  )
@@ -25,19 +25,19 @@ if CLIENT then
     end
 
     net.Receive( "CFC_SERVER_RESTART", function()
-        local time = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
-        SVRestartHud( time )
+        local thyme = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
+        SVRestartHud( thyme )
         hook.Add( "InitPostEntity", "ServerRestartGo", function()
             timer.Simple( 0, function()
-                time = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
-                SVRestartHud( time )
+                thyme = Entity( 0 ):GetNWFloat( "CFC_SERVER_RESTART", -1 )
+                SVRestartHud( thyme )
             end )
         end )
     end )
 end
 
-CFC_SERVER_RESTART = { ["yes"] = false, ["time"] = 30 }
-function ulx.svrestart( calling_ply, time, stop )
+CFC_SERVER_RESTART = { ["yes"] = false, ["thyme"] = 30 }
+function ulx.svrestart( calling_ply, thyme, stop )
 
     CFC_SERVER_RESTART.yes = false
 
@@ -58,17 +58,17 @@ function ulx.svrestart( calling_ply, time, stop )
         return
     end
 
-    CFC_SERVER_RESTART = { ["yes"] = true, ["time"] = SysTime() + tonumber( time ) }
+    CFC_SERVER_RESTART = { ["yes"] = true, ["thyme"] = SysTime() + tonumber( thyme ) }
 
-    local diff = math.max( 0, SysTime() - SysTime() + time )
+    local diff = math.max( 0, SysTime() - SysTime() + thyme )
     Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", diff )
     if SERVER then
-        timer.Create( "CFC_SERVER_RESTART", 0.9, time + 1, function()
+        timer.Create( "CFC_SERVER_RESTART", 0.9, thyme + 1, function()
             Entity( 0 ):SetNWFloat( "CFC_SERVER_RESTART", math.max( 0, diff ) )
         end )
         hook.Add( "Think", "ServerRestartGo", function()
             local bool = CFC_SERVER_RESTART.yes
-            local systime = CFC_SERVER_RESTART.time
+            local systime = CFC_SERVER_RESTART.thyme
 
             if bool and systime <= SysTime() then
                 ServerLog( "\n\nYour Server Has Been Restarted!\n\n" )
@@ -88,10 +88,10 @@ function ulx.svrestart( calling_ply, time, stop )
         end )
     end
 
-    ulx.fancyLogAdmin( calling_ply, "#A told the server to restart in #i seconds!", tonumber( time ) )
+    ulx.fancyLogAdmin( calling_ply, "#A told the server to restart in #i seconds!", tonumber( thyme ) )
 end
 local svrestart = ulx.command( CATEGORY_NAME, "ulx svrestart", ulx.svrestart, "!svrestart" )
-svrestart:addParam{ type = ULib.cmds.NumArg, min = 0, hint = "restart time", ULib.cmds.optional, ULib.cmds.round,
+svrestart:addParam{ type = ULib.cmds.NumArg, min = 0, hint = "restart thyme", ULib.cmds.optional, ULib.cmds.round,
 default = 30}
 svrestart:addParam{ type = ULib.cmds.BoolArg, invisible = true }
 svrestart:defaultAccess( ULib.ACCESS_SUPERADMIN )
